@@ -4,9 +4,16 @@
   <title>FusionAuth OpenID and PKCE example</title>
 </head>
 <body>
+  {% if session %}
+      <h1>You are logged in as {{session.userinfo.email}}</h1>
+      <h2>Here is your OpenID profile</h2>
+      <div><pre>{{profile}}</pre></div>
+      <br/>
 
+      <p><a href="{{logoutUrl}}">Logout</a></p>
+  {% else %}
     <h1>Hello Guest</h1>
     <p>Please <a href="/login">Login</a> to see your profile</p>
-
+  {% endif %}
 </body>
 </html>
