@@ -38,15 +38,11 @@ application["name"] = "PythonExampleApp"
 
 # configure oauth
 application["oauthConfiguration"] = {}
-application["oauthConfiguration"]["authorizedRedirectURLs"] = ["http://localhost:5000/callback/"]
+application["oauthConfiguration"]["authorizedRedirectURLs"] = ["http://localhost:5001/callback"]
 application["oauthConfiguration"]["requireRegistration"] = True
 application["oauthConfiguration"]["enabledGrants"] = ["authorization_code", "refresh_token"]
-application["oauthConfiguration"]["logoutURL"] = "http://localhost:5000/logout"
+application["oauthConfiguration"]["logoutURL"] = "http://localhost:5001/logout"
 application["oauthConfiguration"]["clientSecret"] = "change-this-in-production-to-be-a-real-secret"
-
-# some libraries don't support pkce, notably mozilla-django-oidc: https://github.com/mozilla/mozilla-django-oidc/issues/397
-# since we are server side and have a solid client secret, we're okay turning pkce off
-application["oauthConfiguration"]["proofKeyForCodeExchangePolicy"] = "NotRequiredWhenUsingClientAuthentication"
 
 # assign key from above to sign tokens. This needs to be asymmetric
 application["jwtConfiguration"] = {}
