@@ -2,18 +2,61 @@
 <head>
   <meta charset="utf-8" />
   <title>FusionAuth OpenID and PKCE example</title>
+  <link rel="stylesheet" href="/static/css/changebank.css">
 </head>
 <body>
-  {% if session %}
-      <h1>You are logged in as {{session.userinfo.email}}</h1>
-      <h2>Here is your OpenID profile</h2>
-      <div><pre>{{profile}}</pre></div>
-      <br/>
+  <div id="page-container">
+    <div id="page-header">
+      <div id="logo-header">
+        <img src="https://fusionauth.io/assets/img/samplethemes/changebank/changebank.svg" />
+        {% if session %}
+          <div class="h-row" style="align-items: center;">
+            <p class="header-email">{{session.userinfo.email}}</p>
+            <a class="button-lg" href={{logoutUrl}}>Logout</a>
+          </div>
+        {% else %}
+          <a class="button-lg" href="/login">Login</a>
+        {% endif %}
+      </div>
 
-      <p><a href="{{logoutUrl}}">Logout</a></p>
-  {% else %}
-    <h1>Hello Guest</h1>
-    <p>Please <a href="/login">Login</a> to see your profile</p>
-  {% endif %}
+      <div id="menu-bar" class="menu-bar">
+        {% if session %}
+          <a class="menu-link">Support</a>
+          <a class="menu-link">Make Change</a>
+          <a class="menu-link" style="text-decoration-line: underline;">Account</a>
+        {% else %}
+          <a class="menu-link">About</a>
+          <a class="menu-link">Services</a>
+          <a class="menu-link">Products</a>
+          <a class="menu-link" style="text-decoration-line: underline;">Home</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div style="flex: 1;">
+      {% if session %}
+        <!-- Application page -->
+        <div class="column-container">
+          <div class="app-container">
+            <h3>Your balance</h3>
+            <div class="balance">$0.00</div>
+          </div>
+          <div>
+          </div>
+        </div>
+      {% else %}
+        <div class="column-container">
+          <div class="content-container">
+            <div style="margin-bottom: 100px;">
+              <h1>Welcome to Changebank</h1>
+              <p>To get started, <a href="/login">log in or create a new account</a>.</p>
+            </div>
+          </div>
+          <div style="flex: 0;">
+            <img src="/static/img/money.jpg" style="max-width: 800px;"/>
+          </div>
+        </div>
+      {% endif %}
+    </div>
 </body>
 </html>

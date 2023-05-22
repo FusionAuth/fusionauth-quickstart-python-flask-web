@@ -49,6 +49,7 @@ def logout():
 @app.route("/")
 def home():
     logout = env.get("ISSUER") + "/oauth2/logout?" + urlencode({"client_id": env.get("CLIENT_ID")},quote_via=quote_plus)
+    regisgter = env.get("ISSUER") + "/oauth2/register?"
 
     return render_template(
         "home.html",
