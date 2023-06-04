@@ -9,16 +9,15 @@
     <div id="page-header">
       <div id="logo-header">
         <img src="https://fusionauth.io/assets/img/samplethemes/changebank/changebank.svg" />
-        <div class="h-row" style="align-items: center;">
-          <p class="header-email">{{session.email}}</p>
+        <div class="h-row">
+          <p class="header-email">{{session["email"]}}</p>
           <a class="button-lg" href={{logoutUrl}}>Logout</a>
         </div>
       </div>
 
       <div id="menu-bar" class="menu-bar">
-        <a class="menu-link">Support</a>
-        <a class="menu-link">Make Change</a>
-        <a class="menu-link" style="text-decoration-line: underline;">Account</a>
+        <a class="menu-link inactive" href="/make-change">Make Change</a>
+        <a class="menu-link" href="/account">Account</a>
       </div>
     </div>
 
@@ -28,10 +27,6 @@
         <div class="app-container">
           <h3>Your balance</h3>
           <div class="balance">$0.00</div>
-        </div>
-        <div class="app-container">
-          <h3>Recent transactions</h3>
-          <p>No recent transactions</p>
         </div>
       </div>
     </div>

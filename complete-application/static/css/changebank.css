@@ -33,6 +33,7 @@ body {
 
 .h-row {
   display: flex;
+  align-items: center;
 }
 
 #page-container {
@@ -71,6 +72,16 @@ body {
   margin-left: 40px;
 }
 
+.menu-link {
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-left: 40px;
+}
+
+.inactive {
+  text-decoration-line: none;
+}
+
 .button-lg {
   width: 150px;
   height: 30px;
@@ -98,8 +109,38 @@ body {
 }
 
 .balance {
-  font-size: 70px;
+  font-size: 50px;
   font-weight: 800;
+}
+
+.change-label {
+  font-size: 20px;
+  margin-right: 5px;
+}
+
+.change-input {
+  font-size: 20px;
+  height: 40px;
+  text-align: end;
+  padding-right: 10px;
+}
+
+.change-submit {
+  font-size: 15px;
+  height: 40px;
+  margin-left: 15px;
+  border-radius: 5px;
+}
+
+.change-message {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.error-message {
+  font-size: 20px;
+  color: #FF0000;
+  margin-bottom: 15px;
 }
 
 .app-container {
@@ -111,3 +152,6 @@ body {
   margin-left: 80px;
 }
 
+.change-container {
+  flex: 1;
+}

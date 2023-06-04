@@ -80,12 +80,51 @@ def account():
     access_token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None)
     refresh_token = request.cookies.get(REFRESH_TOKEN_COOKIE_NAME, None)
 
-    if validate_access_token(access_token) is False:
+    if validate_access_token(access_token, refresh_token) is False:
       return redirect(get_logout_url())
 
     return render_template(
         "account.html",
-        session=request.cookies.get(USERINFO_COOKIE_NAME, None),
+        session=json.loads(request.cookies.get(USERINFO_COOKIE_NAME, None)),
+        logoutUrl=get_logout_url())
+
+
+#
+# Takes a dollar amount and converts it to change
+#
+@app.route("/make-change", methods=['GET', 'POST'])
+def make_change():
+    access_token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None)
+    refresh_token = request.cookies.get(REFRESH_TOKEN_COOKIE_NAME, None)
+
+    if validate_access_token(access_token, refresh_token) is False:
+      return redirect(get_logout_url())
+
+    change = {
+      "error": None
+    }
+
+    if request.method == 'POST':
+        dollar_amt_param = request.form["amount"]
+
+        try:
+            if dollar_amt_param:
+                dollar_amt = float(dollar_amt_param)
+
+                nickels = int(dollar_amt / 0.05)
+                pennies = int((dollar_amt - (0.05 * nickels)) / 0.01)
+
+                change["total"] = dollar_amt_param
+                change["nickels"] = nickels
+                change["pennies"] = pennies
+
+        except ValueError:
+            change["error"] = "Please enter a dollar amount"
+
+    return render_template(
+        "make-change.html",
+        session=json.loads(request.cookies.get(USERINFO_COOKIE_NAME, None)),
+        change=change,
         logoutUrl=get_logout_url())
 
 
@@ -96,7 +135,7 @@ def account():
 # * JWT signature is valid. Re-authenticate the user if it isn't.
 # * The access token is not expired. If it is, attempt to refresh it. If that fails, re-authenticate the user.
 #
-def validate_access_token(access_token):
+def validate_access_token(access_token, refresh_token):
   # If the access token is None, that means that either user isn't logged in, or the cookie holding it expired.
   return access_token is not None
 
