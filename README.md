@@ -11,11 +11,11 @@ The `docker-compose.yml` file and the `kickstart` directory are used to start an
 The `/complete-application` directory contains a fully working version of the application.
 
 The `/stub-application` directory contains a stubbed-out version of the application. Following the 
-directions in the [Python/Flask Quickstart](https://fusionauth.io) will produce a working version of the application.
+directions in [Python/Flask Quickstart](quickstart.md) will produce a working version of the application.
 
 ## Project Dependencies
 * Docker, for running FusionAuth
-* Python, for running the Changebank application. This example app was built and tested with Python 3.11. You may have success with earlier versions, but they have not been tested.
+* Python 3.8 or later, for running the Changebank application
 
 ## Running FusionAuth
 To run FusionAuth, just stand up the docker containers using `docker-compose`.
