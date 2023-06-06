@@ -30,6 +30,17 @@ oauth.register(
     server_metadata_url=f'{env.get("ISSUER")}/.well-known/openid-configuration'
 )
 
+@app.route("/")
+def home():
+    logout = env.get("ISSUER") + "/oauth2/logout?" + urlencode({"client_id": env.get("CLIENT_ID")},quote_via=quote_plus)
+
+    if request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None) is not None:
+      # In a real application, we would validate the token signature and expiration
+      return redirect("/account")
+
+    return render_template("home.html")
+
+
 @app.route("/login")
 def login():
     return oauth.FusionAuth.authorize_redirect(
@@ -37,7 +48,8 @@ def login():
     )
 
 
-@app.route("/callback", methods=["GET", "POST"])
+#@app.route("/callback", methods=["GET", "POST"])
+@app.route("/callback")
 def callback():
     token = oauth.FusionAuth.authorize_access_token()
 
@@ -59,17 +71,6 @@ def logout():
     resp = delete_auth_cookies(resp)
 
     return resp
-
-
-@app.route("/")
-def home():
-    logout = env.get("ISSUER") + "/oauth2/logout?" + urlencode({"client_id": env.get("CLIENT_ID")},quote_via=quote_plus)
-
-    if request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None) is not None:
-      # In a real application, we would validate the token signature and expiration
-      return redirect("/account")
-
-    return render_template("home.html")
 
 
 #
@@ -114,9 +115,9 @@ def make_change():
                 nickels = int(dollar_amt / 0.05)
                 pennies = int((dollar_amt - (0.05 * nickels)) / 0.01)
 
-                change["total"] = dollar_amt_param
-                change["nickels"] = nickels
-                change["pennies"] = pennies
+                change["total"] = format(dollar_amt, ",.2f")
+                change["nickels"] = format(nickels, ",d")
+                change["pennies"] = format(pennies, ",d")
 
         except ValueError:
             change["error"] = "Please enter a dollar amount"
