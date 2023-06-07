@@ -48,9 +48,6 @@ body > main {
 body > main {
   padding-top: 0;
 }
-body > main header.app-header {
-  display: none;
-}
 /* end help bar */
 
 
