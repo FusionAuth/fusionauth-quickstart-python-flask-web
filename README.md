@@ -1,8 +1,10 @@
 # Example Flask Application 
 
-This repo holds two versions of an example Python/Flask application that uses FusionAuth as the identity provider. 
+This repo holds an example Python/Flask application that uses FusionAuth as the identity provider. 
 This application will use an OAuth Authorization Code Grant workflow to log a user in and get them access and 
 refresh tokens.
+
+This application was built by following the [Python/Flask Quickstart](https://fusionauth.io/quickstarts/fusionauth-quickstart-python-flask-web).
 
 ## Project Contents
 
@@ -10,12 +12,9 @@ The `docker-compose.yml` file and the `kickstart` directory are used to start an
 
 The `/complete-application` directory contains a fully working version of the application.
 
-The `/stub-application` directory contains a stubbed-out version of the application. Following the 
-directions in [Python/Flask Quickstart](quickstart.md) will produce a working version of the application.
-
 ## Project Dependencies
 * Docker, for running FusionAuth
-* Python 3.8 or later, for running the Changebank application
+* Python 3.8 or later, for running the Changebank Python application
 
 ## Running FusionAuth
 To run FusionAuth, just stand up the docker containers using `docker-compose`.
@@ -26,8 +25,8 @@ docker-compose up
 
 This will start a PostgreSQL database, and Elastic service, and the FusionAuth server.
 
-## Running the Example Apps
-To run either application, first go into the project directory
+## Running the Example App
+To run the application, first go into the project directory
 
 ```shell
 cd complete-application
@@ -37,7 +36,7 @@ Set up a Python virtual env and installing the project dependencies.
 ```shell
 python -m venv venv && \
 source venv/bin/activate && \
-pip install -r requirements.txt && \
+pip install -r requirements.txt
 ```
 
 Then use the `flask run` command to start up the application.
