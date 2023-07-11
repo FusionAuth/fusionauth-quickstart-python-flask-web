@@ -115,12 +115,6 @@ main.page-body .row:last-of-type a {
   display: inline-block;
   line-height: normal;
 }
-.fa-arrow-left:before {
-  content: '\f104'; /* changing arrow icon to thinner angle icon */
-}
-.fa-arrow-right:before {
-  content: '\f105'; /* changing arrow icon to thinner angle icon */
-}
 .button + a {
   text-align: center;
   display: block;
