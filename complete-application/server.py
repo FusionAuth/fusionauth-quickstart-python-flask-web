@@ -13,7 +13,7 @@ USERINFO_COOKIE_NAME = "cb_userinfo"
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
-    load_dotenv(ENV_FILE)
+  load_dotenv(ENV_FILE)
 
 app = Flask(__name__)
 app.secret_key = env.get("APP_SECRET_KEY")
@@ -21,70 +21,70 @@ app.secret_key = env.get("APP_SECRET_KEY")
 oauth = OAuth(app)
 
 oauth.register(
-    "FusionAuth",
-    client_id=env.get("CLIENT_ID"),
-    client_secret=env.get("CLIENT_SECRET"),
-    client_kwargs={
-        "scope": "openid offline_access",
-        'code_challenge_method': 'S256' # This enables PKCE
-    },
-    server_metadata_url=f'{env.get("ISSUER")}/.well-known/openid-configuration'
+  "FusionAuth",
+  client_id=env.get("CLIENT_ID"),
+  client_secret=env.get("CLIENT_SECRET"),
+  client_kwargs={
+    "scope": "openid offline_access",
+    'code_challenge_method': 'S256' # This enables PKCE
+  },
+  server_metadata_url=f'{env.get("ISSUER")}/.well-known/openid-configuration'
 )
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=env.get("PORT", 5000))
+  app.run(host="0.0.0.0", port=env.get("PORT", 5000))
 
 def get_logout_url():
-    return env.get("ISSUER") + "/oauth2/logout?" + urlencode({"client_id": env.get("CLIENT_ID")},quote_via=quote_plus)
+  return env.get("ISSUER") + "/oauth2/logout?" + urlencode({"client_id": env.get("CLIENT_ID")},quote_via=quote_plus)
 #end::baseApplication[]
 
 #tag::homeRoute[]
 @app.route("/")
 def home():
-    if request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None) is not None:
-      # In a real application, we would validate the token signature and expiration
-      return redirect("/account")
+  if request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None) is not None:
+    # In a real application, we would validate the token signature and expiration
+    return redirect("/account")
 
-    return render_template("home.html")
+  return render_template("home.html")
 #end::homeRoute[]
 
 
 #tag::loginRoute[]
 @app.route("/login")
 def login():
-    return oauth.FusionAuth.authorize_redirect(
-        redirect_uri=url_for("callback", _external=True)
-    )
+  return oauth.FusionAuth.authorize_redirect(
+    redirect_uri=url_for("callback", _external=True)
+  )
 #end::loginRoute[]
 
 
 #tag::callbackRoute[]
 @app.route("/callback")
 def callback():
-    token = oauth.FusionAuth.authorize_access_token()
+  token = oauth.FusionAuth.authorize_access_token()
 
-    resp = make_response(redirect("/"))
+  resp = make_response(redirect("/"))
 
-    resp.set_cookie(ACCESS_TOKEN_COOKIE_NAME, token["access_token"], max_age=token["expires_in"], httponly=True, samesite="Lax")
-    resp.set_cookie(REFRESH_TOKEN_COOKIE_NAME, token["refresh_token"], max_age=token["expires_in"], httponly=True, samesite="Lax")
-    resp.set_cookie(USERINFO_COOKIE_NAME, json.dumps(token["userinfo"]), max_age=token["expires_in"], httponly=False, samesite="Lax")
-    session["user"] = token["userinfo"]
+  resp.set_cookie(ACCESS_TOKEN_COOKIE_NAME, token["access_token"], max_age=token["expires_in"], httponly=True, samesite="Lax")
+  resp.set_cookie(REFRESH_TOKEN_COOKIE_NAME, token["refresh_token"], max_age=token["expires_in"], httponly=True, samesite="Lax")
+  resp.set_cookie(USERINFO_COOKIE_NAME, json.dumps(token["userinfo"]), max_age=token["expires_in"], httponly=False, samesite="Lax")
+  session["user"] = token["userinfo"]
 
-    return resp
+  return resp
 #end::callbackRoute[]
 
 
 #tag::logoutRoute[]
 @app.route("/logout")
 def logout():
-    session.clear()
+  session.clear()
 
-    resp = make_response(redirect("/"))
-    resp.delete_cookie(ACCESS_TOKEN_COOKIE_NAME)
-    resp.delete_cookie(REFRESH_TOKEN_COOKIE_NAME)
-    resp.delete_cookie(USERINFO_COOKIE_NAME)
+  resp = make_response(redirect("/"))
+  resp.delete_cookie(ACCESS_TOKEN_COOKIE_NAME)
+  resp.delete_cookie(REFRESH_TOKEN_COOKIE_NAME)
+  resp.delete_cookie(USERINFO_COOKIE_NAME)
 
-    return resp
+  return resp
 #end::logoutRoute[]
 
 
@@ -94,16 +94,16 @@ def logout():
 #tag::accountRoute[]
 @app.route("/account")
 def account():
-    access_token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None)
-    refresh_token = request.cookies.get(REFRESH_TOKEN_COOKIE_NAME, None)
+  access_token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None)
+  refresh_token = request.cookies.get(REFRESH_TOKEN_COOKIE_NAME, None)
 
-    if access_token is None:
-      return redirect(get_logout_url())
+  if access_token is None:
+    return redirect(get_logout_url())
 
-    return render_template(
-        "account.html",
-        session=json.loads(request.cookies.get(USERINFO_COOKIE_NAME, None)),
-        logoutUrl=get_logout_url())
+  return render_template(
+    "account.html",
+    session=json.loads(request.cookies.get(USERINFO_COOKIE_NAME, None)),
+    logoutUrl=get_logout_url())
 #end::accountRoute[]
 
 
@@ -113,36 +113,36 @@ def account():
 #tag::makeChangeRoute[]
 @app.route("/make-change", methods=['GET', 'POST'])
 def make_change():
-    access_token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None)
-    refresh_token = request.cookies.get(REFRESH_TOKEN_COOKIE_NAME, None)
+  access_token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None)
+  refresh_token = request.cookies.get(REFRESH_TOKEN_COOKIE_NAME, None)
 
-    if access_token is None:
-      return redirect(get_logout_url())
+  if access_token is None:
+    return redirect(get_logout_url())
 
-    change = {
-      "error": None
-    }
+  change = {
+    "error": None
+  }
 
-    if request.method == 'POST':
-        dollar_amt_param = request.form["amount"]
+  if request.method == 'POST':
+    dollar_amt_param = request.form["amount"]
 
-        try:
-            if dollar_amt_param:
-                dollar_amt = float(dollar_amt_param)
+    try:
+      if dollar_amt_param:
+        dollar_amt = float(dollar_amt_param)
 
-                nickels = int(dollar_amt / 0.05)
-                pennies = math.ceil((dollar_amt - (0.05 * nickels)) / 0.01)
+        nickels = int(dollar_amt / 0.05)
+        pennies = math.ceil((dollar_amt - (0.05 * nickels)) / 0.01)
 
-                change["total"] = format(dollar_amt, ",.2f")
-                change["nickels"] = format(nickels, ",d")
-                change["pennies"] = format(pennies, ",d")
+        change["total"] = format(dollar_amt, ",.2f")
+        change["nickels"] = format(nickels, ",d")
+        change["pennies"] = format(pennies, ",d")
 
-        except ValueError:
-            change["error"] = "Please enter a dollar amount"
+    except ValueError:
+      change["error"] = "Please enter a dollar amount"
 
-    return render_template(
-        "make-change.html",
-        session=json.loads(request.cookies.get(USERINFO_COOKIE_NAME, None)),
-        change=change,
-        logoutUrl=get_logout_url())
+  return render_template(
+    "make-change.html",
+    session=json.loads(request.cookies.get(USERINFO_COOKIE_NAME, None)),
+    change=change,
+    logoutUrl=get_logout_url())
 #end::makeChangeRoute[]
