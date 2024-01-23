@@ -1,0 +1,54 @@
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>FusionAuth OpenID and PKCE example</title>
+  <link rel="stylesheet" href="/static/css/changebank.css">
+</head>
+<body>
+  <div id="page-container">
+    <div id="page-header">
+      <div id="logo-header">
+        <img src="https://fusionauth.io/assets/img/samplethemes/changebank/changebank.svg" />
+        <div class="h-row">
+          <p class="header-email">{{session["email"]}}</p>
+          <a class="button-lg" href={{logoutUrl}}>Logout</a>
+        </div>
+      </div>
+
+      <div id="menu-bar" class="menu-bar">
+        <a class="menu-link" href="/profile">Profile</a>
+        <a class="menu-link inactive" href="/make-change">Make Change</a>
+        <a class="menu-link inactive" href="/account">Account</a>
+      </div>
+    </div>
+
+    <div style="flex: 1;">
+      <div class="column-container">
+        <div class="app-container profile-container">
+          <h3>Current preferences</h3>
+        
+          <form action="/profile" method="post">
+            {% if profile["error"] is not none: %}
+              <div class="error-message">{{profile.error}}</div>
+            {% endif %}
+            {% if profile["registration_data"] %}
+              {% set registration_data = profile["registration_data"] %}
+              {% for key in registration_data.keys() %}
+                <p>
+                {% if key == 'favoritecolor' and registration_data['favoritecolor'] | length > 0 %}
+                  Favorite Color: <input name='{{key}}' value='{{registration_data['favoritecolor']}}' />
+                {% else %}
+                  Favorite Color: <input name='{{key}}' value='' />
+                {% endif %}
+                </p>
+              {% endfor %}
+            {% else %}
+              Favorite Color: <input name='favoritecolor' value='' />
+            {% endif %}
+            <input type="submit" value="Update"></input>
+          </form>
+        </div>        
+      </div>
+    </div>
+</body>
+</html>

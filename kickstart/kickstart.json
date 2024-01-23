@@ -43,7 +43,7 @@
               "OPTIONS"
             ],
             "allowedOrigins": [
-              "http://localhost:5000"
+              "http://localhost:5001"
             ],
             "debug": false,
             "enabled": true,
@@ -77,14 +77,14 @@
           "name": "Example app",
           "oauthConfiguration": {
             "authorizedRedirectURLs": [
-              "http://localhost:5000/callback",
-              "http://localhost:5000"
+              "http://localhost:5001/callback",
+              "http://localhost:5001"
             ],
             "authorizedOriginURLs": [
-              "http://localhost:5000"
+              "http://localhost:5001"
             ],
             "clientSecret": "super-secret-secret-that-should-be-regenerated-for-production",
-            "logoutURL": "http://localhost:5000/logout",
+            "logoutURL": "http://localhost:5001/logout",
             "enabledGrants": [
               "authorization_code",
               "refresh_token"

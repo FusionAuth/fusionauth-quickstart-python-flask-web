@@ -48,10 +48,10 @@ flask --app server.py run
 If you're going to be working on the application and want hot reloads of the server code, add the `--debug` flag.
 
 ```shell
-flask --app server.py --debug run
+flask --app server.py --debug run -p 5001
 ```
 
-Visit the local webserver at `http://localhost:5000/` and sign in using the credentials:
+Visit the local webserver at `http://localhost:5001/` and sign in using the credentials:
 
 * username: richard@example.com
 * password: password

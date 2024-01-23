@@ -132,7 +132,7 @@ body {
   border-radius: 5px;
 }
 
-.change-message {
+.change-message, .profile-message {
   font-size: 20px;
   margin-bottom: 15px;
 }
@@ -152,6 +152,6 @@ body {
   margin-left: 80px;
 }
 
-.change-container {
+.change-container, .profile-container {
   flex: 1;
 }

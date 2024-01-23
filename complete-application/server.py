@@ -6,6 +6,8 @@ from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, redirect, render_template, session, url_for, request, make_response
+from fusionauth.fusionauth_client import FusionAuthClient
+
 
 ACCESS_TOKEN_COOKIE_NAME = "cb_access_token"
 REFRESH_TOKEN_COOKIE_NAME = "cb_refresh_token"
@@ -32,7 +34,7 @@ oauth.register(
 )
 
 if __name__ == "__main__":
-  app.run(host="0.0.0.0", port=env.get("PORT", 5000))
+  app.run(host="0.0.0.0", port=env.get("PORT", 5001))
 
 def get_logout_url():
   return env.get("ISSUER") + "/oauth2/logout?" + urlencode({"client_id": env.get("CLIENT_ID")},quote_via=quote_plus)
@@ -146,3 +148,59 @@ def make_change():
     change=change,
     logoutUrl=get_logout_url())
 #end::makeChangeRoute[]
+
+#
+# This is the profile page.
+#
+#tag::profileRoute[]
+@app.route("/profile", methods=['GET', 'POST'])
+def profile():
+  access_token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None)
+  refresh_token = request.cookies.get(REFRESH_TOKEN_COOKIE_NAME, None)
+
+  if access_token is None:
+    return redirect(get_logout_url())
+
+  profile = {
+    "error": None
+  }
+
+  fusionauth_api_client = FusionAuthClient(env.get('API_KEY'), env.get('ISSUER'))
+  if session.get('user') != None:
+      user = session['user']
+      user_id = user['sub']
+      application_id = user['aud']
+
+      client_response = fusionauth_api_client.retrieve_registration(user_id, application_id)
+      if client_response.was_successful():
+          registration_data = client_response.success_response['registration'].get('data')
+          profile['registration_data'] = registration_data
+          print(registration_data)
+
+          if request.method == 'POST':
+            try:
+              favorite_color = request.form["favoritecolor"]
+              current_color = registration_data.get('favoritecolor')
+
+              if favorite_color != current_color and len(favorite_color) > 0:
+                registration_data['favoritecolor'] = favorite_color
+                patch_request = { 'registration' : {'applicationId': application_id, 'data' : registration_data }}
+                client_response = fusionauth_api_client.patch_registration(user_id, patch_request)
+                if client_response.was_successful():
+                    profile['registration_data'] = registration_data
+                else:
+                    profile['error'] = "Unable to save data"
+              else:
+                profile["error"] = "Please enter a new color"
+
+            except KeyError:
+              profile["error"] = "Please enter a color"
+
+  print(profile["error"])
+
+  return render_template(
+    "profile.html",
+    session=json.loads(request.cookies.get(USERINFO_COOKIE_NAME, None)),
+    profile=profile,
+    logoutUrl=get_logout_url())
+#end::profileRoute[]
