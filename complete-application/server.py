@@ -25,7 +25,7 @@ oauth.register(
   client_id=env.get("CLIENT_ID"),
   client_secret=env.get("CLIENT_SECRET"),
   client_kwargs={
-    "scope": "openid offline_access",
+    "scope": "openid email profile offline_access",
     'code_challenge_method': 'S256' # This enables PKCE
   },
   server_metadata_url=f'{env.get("ISSUER")}/.well-known/openid-configuration'
