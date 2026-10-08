@@ -1,6 +1,4 @@
-#tag::baseApplication[]
 import json
-import math
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
@@ -32,13 +30,11 @@ oauth.register(
 )
 
 if __name__ == "__main__":
-  app.run(host="0.0.0.0", port=env.get("PORT", 5000))
+  app.run(host="0.0.0.0", port=env.get("PORT", 9012))
 
 def get_logout_url():
   return env.get("ISSUER") + "/oauth2/logout?" + urlencode({"client_id": env.get("CLIENT_ID")},quote_via=quote_plus)
-#end::baseApplication[]
 
-#tag::homeRoute[]
 @app.route("/")
 def home():
   if request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None) is not None:
@@ -46,19 +42,15 @@ def home():
     return redirect("/account")
 
   return render_template("home.html")
-#end::homeRoute[]
 
 
-#tag::loginRoute[]
 @app.route("/login")
 def login():
   return oauth.FusionAuth.authorize_redirect(
     redirect_uri=url_for("callback", _external=True)
   )
-#end::loginRoute[]
 
 
-#tag::callbackRoute[]
 @app.route("/callback")
 def callback():
   token = oauth.FusionAuth.authorize_access_token()
@@ -71,10 +63,8 @@ def callback():
   session["user"] = token["userinfo"]
 
   return resp
-#end::callbackRoute[]
 
 
-#tag::logoutRoute[]
 @app.route("/logout")
 def logout():
   session.clear()
@@ -85,13 +75,11 @@ def logout():
   resp.delete_cookie(USERINFO_COOKIE_NAME)
 
   return resp
-#end::logoutRoute[]
 
 
 #
 # This is the logged in Account page.
 #
-#tag::accountRoute[]
 @app.route("/account")
 def account():
   access_token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None)
@@ -104,13 +92,11 @@ def account():
     "account.html",
     session=json.loads(request.cookies.get(USERINFO_COOKIE_NAME, None)),
     logoutUrl=get_logout_url())
-#end::accountRoute[]
 
 
 #
 # Takes a dollar amount and converts it to change
 #
-#tag::makeChangeRoute[]
 @app.route("/make-change", methods=['GET', 'POST'])
 def make_change():
   access_token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME, None)
@@ -128,12 +114,12 @@ def make_change():
 
     try:
       if dollar_amt_param:
-        dollar_amt = float(dollar_amt_param)
+        # work in whole cents so floating-point rounding can't drop a penny
+        cents = round(float(dollar_amt_param) * 100)
 
-        nickels = int(dollar_amt / 0.05)
-        pennies = math.ceil((dollar_amt - (0.05 * nickels)) / 0.01)
+        nickels, pennies = divmod(cents, 5)
 
-        change["total"] = format(dollar_amt, ",.2f")
+        change["total"] = format(cents / 100, ",.2f")
         change["nickels"] = format(nickels, ",d")
         change["pennies"] = format(pennies, ",d")
 
@@ -145,4 +131,3 @@ def make_change():
     session=json.loads(request.cookies.get(USERINFO_COOKIE_NAME, None)),
     change=change,
     logoutUrl=get_logout_url())
-#end::makeChangeRoute[]
